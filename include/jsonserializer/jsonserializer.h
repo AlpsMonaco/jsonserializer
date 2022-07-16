@@ -20,8 +20,15 @@ public:
     {
         ParseResult result;
         for (const auto& v : value_list)
-            result = Parser::Parse<Value>(d_, v);
-        return result == ParseResult::kSuccess;
+        {
+            result = Parser::Parse<Value, std::string>(d_, v, err_);
+            if (result != ParseResult::kSuccess)
+            {
+                err_ = v.GetError();
+                return false;
+            }
+        }
+        return true;
     }
 
 protected:

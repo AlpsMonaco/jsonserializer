@@ -44,15 +44,21 @@ int main(int argc, char** argv)
     JsonSerializer js;
     if (!js.Parse(json))
         return 1;
-    js.Unseralize({{"int", &bar.I},
-                   {"string", &bar.S},
-                   {"bool", &bar.B},
-                   {"object", {{{"string", &bar.f.S}, {"int", &bar.f.I}, {"object", {{"int", &IValue}}}}}}});
+    bool b = js.Unseralize({{"int2", &bar.I},
+                            {"string", &bar.S},
+                            {"bool", &bar.B},
+                            {"object", {{{"string", &bar.f.S}, {"int", &bar.f.I}, {"object", {{"int", &IValue}}}}}}});
 
-    cout << bar.I << endl;
-    cout << bar.S << endl;
-    cout << bar.B << endl;
-    cout << bar.f.I << endl;
-    cout << bar.f.S << endl;
-    cout << IValue << endl;
+    if (b)
+    {
+        cout << bar.I << endl;
+        cout << bar.S << endl;
+        cout << bar.B << endl;
+        cout << bar.f.I << endl;
+        cout << bar.f.S << endl;
+    }
+    else
+    {
+        cout << js.GetError();
+    }
 }

@@ -4,6 +4,7 @@
 #include "parser.h"
 #include <functional>
 #include <vector>
+#include <string>
 #include <memory>
 
 JSON_SERIALIZER_NAMESPACE_START
@@ -21,7 +22,7 @@ public:
                        ParseResult result;
                        for (const auto& v : *(value_list_))
                        {
-                           result = Parser::Parse<Value>(value, v);
+                           result = Parser::Parse<Value, std::string>(value, v, error_);
                            if (result != ParseResult::kSuccess) return result;
                        }
                        return ParseResult::kSuccess;
@@ -38,7 +39,7 @@ public:
                        ParseResult result;
                        for (const auto& v : *(value_list_))
                        {
-                           result = Parser::Parse<Value>(value, v);
+                           result = Parser::Parse<Value>(value, v, error_);
                            if (result != ParseResult::kSuccess) return result;
                        }
                        return ParseResult::kSuccess;
@@ -107,6 +108,9 @@ public:
     inline const char* Key() { return key_; }
     inline const char* Key() const { return key_; }
 
+    inline const char* GetError() { return error_.c_str(); }
+    inline const char* GetError() const { return error_.c_str(); }
+
     inline ValueType Type() { return value_type_; }
     inline ValueType Type() const { return value_type_; }
 
@@ -121,6 +125,7 @@ protected:
     } pointer_field_;
     std::function<ParseResult(const rapidjson::Value& value)> reactor_;
     std::unique_ptr<ValueList> value_list_;
+    std::string error_;
 };
 
 JSON_SERIALIZER_NAMESPACE_END
