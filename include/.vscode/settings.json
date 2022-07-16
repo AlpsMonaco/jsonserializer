@@ -2,6 +2,9 @@
     "files.associations": {
         "xstring": "cpp",
         "type_traits": "cpp",
-        "functional": "cpp"
+        "functional": "cpp",
+        "ostream": "cpp",
+        "iostream": "cpp",
+        "vector": "cpp"
     }
 }
