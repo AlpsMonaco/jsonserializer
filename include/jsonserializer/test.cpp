@@ -3,51 +3,56 @@
 #include "jsonserializer.h"
 
 using namespace std;
-
-struct Foo2
-{
-    int bar_1;
-    int bar_2;
-};
+using namespace jsonserializer;
 
 struct Foo
 {
-    int bar_1;
-    const char* bar_2;
-    bool bar_3;
-    Foo2 foo2;
+    int I;
+    const char* S;
+    bool B;
 };
 
 struct Bar
 {
-    Bar(int i)
-    {
-        f_ = [&]() -> void
-        {
-            cout << i << endl;
-        };
-    }
-    ~Bar() { cout << "~Bar" << endl; }
-
-    std::function<void()> GetCaller()
-    {
-        return f_;
-    }
-
-    std::function<void()> f_;
+    int I;
+    const char* S;
+    bool B;
+    Foo f;
 };
 
 int main(int argc, char** argv)
 {
-    Foo foo;
-    jsonserializer::JsonSerializer js;
-    auto result = js.Parse(R"({"foo":"bar","bar":2,"b":true,"object":{"asd":"bar"}})", {{"foo", &foo.bar_2},
-                                                                                        {"bar", &foo.bar_1},
-                                                                                        {"b", &foo.bar_3},
-                                                                                        {"object", &foo.foo2}});
-    if (result != jsonserializer::ParseResult::kSuccess)
-    {
-        cout << js.GetError() << endl;
+    const char* json = R"(
+        {
+            "int":1,
+            "string":"string",
+            "bool":true,
+            "object":
+            {
+                "int":2,
+                "string":"string",
+                "object":
+                {
+                    "int":3,
+                    "string":"string"
+                }
+            }
+        }
+    )";
+    int IValue;
+    Bar bar;
+    JsonSerializer js;
+    if (!js.Parse(json))
         return 1;
-    }
+    js.Unseralize({{"int", &bar.I},
+                   {"string", &bar.S},
+                   {"bool", &bar.B},
+                   {"object", {{{"string", &bar.f.S}, {"int", &bar.f.I}, {"object", {{"int", &IValue}}}}}}});
+
+    cout << bar.I << endl;
+    cout << bar.S << endl;
+    cout << bar.B << endl;
+    cout << bar.f.I << endl;
+    cout << bar.f.S << endl;
+    cout << IValue << endl;
 }
