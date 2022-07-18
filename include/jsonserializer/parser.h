@@ -2,61 +2,30 @@
 #define __JSON_SERIALIZER_PARSER_H__
 
 #include "prefix.h"
+#include "errors.h"
 
 JSON_SERIALIZER_NAMESPACE_START
-
-enum class ParseResult : int
-{
-    kSuccess,
-    kKeyNotExist,
-    kTypeNotMatch,
-};
 
 class Parser
 {
 public:
-    template <typename ExternValueType, typename ErrorWriter>
-    static ParseResult Parse(const rapidjson::Value& object, const ExternValueType& value, ErrorWriter& error_writer)
+    template <typename ExternValueType>
+    static Errors Parse(const rapidjson::Value& object, const ExternValueType& value)
     {
-        if (!object.HasMember(value.Key()))
-        {
-            error_writer = value.Key();
-            error_writer += " not exist";
-            return ParseResult::kKeyNotExist;
-        }
+        if (!object.HasMember(value.Key())) { return Errors(std::string(value.Key()) + " not exist"); }
         switch (value.Type())
         {
         case ValueType::kInt:
-            if (!object[value.Key()].IsInt())
-            {
-                error_writer = value.Key();
-                error_writer += " not a int";
-                return ParseResult::kTypeNotMatch;
-            }
+            if (!object[value.Key()].IsInt()) { return Errors(std::string(value.Key()) + " is not a int"); }
             break;
         case ValueType::kString:
-            if (!object[value.Key()].IsString())
-            {
-                error_writer = value.Key();
-                error_writer += " not a string";
-                return ParseResult::kTypeNotMatch;
-            }
+            if (!object[value.Key()].IsString()) { return Errors(std::string(value.Key()) + " is not a string"); }
             break;
         case ValueType::kBool:
-            if (!object[value.Key()].IsBool())
-            {
-                error_writer = value.Key();
-                error_writer += " not a bool";
-                return ParseResult::kTypeNotMatch;
-            }
+            if (!object[value.Key()].IsBool()) { return Errors(std::string(value.Key()) + " is not a bool"); }
             break;
         case ValueType::kObject:
-            if (!object[value.Key()].IsObject())
-            {
-                error_writer = value.Key();
-                error_writer += " not a object";
-                return ParseResult::kTypeNotMatch;
-            }
+            if (!object[value.Key()].IsObject()) { return Errors(std::string(value.Key()) + " is not a object"); }
             break;
         }
         return value(object[value.Key()]);

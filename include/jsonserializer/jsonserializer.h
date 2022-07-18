@@ -15,25 +15,20 @@ public:
         d_.Parse(json);
         return !d_.HasParseError();
     }
-    inline const char* GetError() { return err_.c_str(); }
-    bool Unseralize(const Value::ValueList& value_list)
+    Errors Unseralize(const Value::ValueList& value_list)
     {
-        ParseResult result;
+        Errors errors;
         for (const auto& v : value_list)
         {
-            result = Parser::Parse<Value, std::string>(d_, v, err_);
-            if (result != ParseResult::kSuccess)
-            {
-                err_ = v.GetError();
-                return false;
-            }
+            errors = Parser::Parse<Value>(d_, v);
+            if (errors)
+                break;
         }
-        return true;
+        return errors;
     }
 
 protected:
     ::rapidjson::Document d_;
-    ::std::string err_;
 };
 
 JSON_SERIALIZER_NAMESPACE_END

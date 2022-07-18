@@ -5,7 +5,6 @@
 #include <functional>
 #include <vector>
 #include <string>
-#include <memory>
 
 JSON_SERIALIZER_NAMESPACE_START
 
@@ -17,64 +16,62 @@ public:
     Value(const char* key, ValueList& value_list)
         : key_(key), value_type_(ValueType::kObject),
           value_list_(std::make_unique<ValueList>(std::move(value_list))),
-          reactor_([&](const rapidjson::Value& value) -> ParseResult
+          reactor_([&](const rapidjson::Value& value) -> Errors
                    {
-                       ParseResult result;
+                       Errors errors;
                        for (const auto& v : *(value_list_))
                        {
-                           result = Parser::Parse<Value, std::string>(value, v, error_);
-                           if (result != ParseResult::kSuccess) return result;
+                           errors = Parser::Parse<Value>(value, v);
+                           if (errors) break;
                        }
-                       return ParseResult::kSuccess;
+                       return errors;
                    })
     {
-        // value_list_ = std::make_unique<ValueList>(std::move(value_list));
     }
 
     Value(const char* key, ValueList&& value_list)
         : key_(key), value_type_(ValueType::kObject),
           value_list_(std::make_unique<ValueList>(std::move(value_list))),
-          reactor_([&](const rapidjson::Value& value) -> ParseResult
+          reactor_([&](const rapidjson::Value& value) -> Errors
                    {
-                       ParseResult result;
+                       Errors errors;
                        for (const auto& v : *(value_list_))
                        {
-                           result = Parser::Parse<Value>(value, v, error_);
-                           if (result != ParseResult::kSuccess) return result;
+                           errors = Parser::Parse<Value>(value, v);
+                           if (errors) break;
                        }
-                       return ParseResult::kSuccess;
+                       return errors;
                    })
     {
-        // value_list_ = std::make_unique<ValueList>(std::move(value_list));
     }
 
     Value(const char* key, int* p)
         : key_(key), value_type_(ValueType::kInt),
           value_list_(),
-          reactor_([&](const rapidjson::Value& value) -> ParseResult
+          reactor_([&](const rapidjson::Value& value) -> Errors
                    {
                        *pointer_field_.ptr_int = value.GetInt();
-                       return ParseResult::kSuccess;
+                       return Errors();
                    })
     {
         pointer_field_.ptr_int = p;
     }
     Value(const char* key, bool* p)
         : key_(key), value_type_(ValueType::kBool), value_list_(),
-          reactor_([&](const rapidjson::Value& value) -> ParseResult
+          reactor_([&](const rapidjson::Value& value) -> Errors
                    {
                        *pointer_field_.ptr_bool = value.GetBool();
-                       return ParseResult::kSuccess;
+                       return Errors();
                    })
     {
         pointer_field_.ptr_bool = p;
     }
     Value(const char* key, const char** p)
         : key_(key), value_type_(ValueType::kString), value_list_(),
-          reactor_([&](const rapidjson::Value& value) -> ParseResult
+          reactor_([&](const rapidjson::Value& value) -> Errors
                    {
                        *pointer_field_.ptr_string = value.GetString();
-                       return ParseResult::kSuccess;
+                       return Errors();
                    })
     {
         pointer_field_.ptr_string = p;
@@ -102,8 +99,8 @@ public:
     }
     ~Value() {}
 
-    ParseResult operator()(const rapidjson::Value& value) { return reactor_(value); }
-    ParseResult operator()(const rapidjson::Value& value) const { return reactor_(value); }
+    Errors operator()(const rapidjson::Value& value) { return reactor_(value); }
+    Errors operator()(const rapidjson::Value& value) const { return reactor_(value); }
 
     inline const char* Key() { return key_; }
     inline const char* Key() const { return key_; }
@@ -123,7 +120,7 @@ protected:
         bool* ptr_bool;
         const char** ptr_string;
     } pointer_field_;
-    std::function<ParseResult(const rapidjson::Value& value)> reactor_;
+    std::function<Errors(const rapidjson::Value& value)> reactor_;
     std::unique_ptr<ValueList> value_list_;
     std::string error_;
 };
