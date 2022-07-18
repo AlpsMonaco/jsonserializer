@@ -103,9 +103,8 @@ public:
         }
         return result + ErrorDict::Get().Query(error_code_);
     }
-
+    
     inline std::string operator()() const { return const_cast<Errors&>(*this)(); }
-
     inline ErrorCode Code() { return error_code_; }
     inline ErrorCode Code() const { return error_code_; }
     inline std::string Message() { return (*this)(); }
