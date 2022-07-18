@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     Errors err = js.Unseralize({{"int", &bar.I},
                                 {"string", &bar.S},
                                 {"bool", &bar.B},
-                                {"object", {{{"string", &bar.f.S}, {"int", &bar.f.I}, {"object", {{"string", &IValue}}}}}}});
+                                {"object", {{{"string", &bar.f.S}, {"int", &bar.f.I}, {"object", {{"int3", &IValue}}}}}}});
 
     if (err)
         cout << err();

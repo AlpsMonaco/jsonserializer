@@ -68,6 +68,7 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "*.rh": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "coroutine": "cpp"
     }
 }

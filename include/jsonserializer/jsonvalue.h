@@ -14,7 +14,8 @@ public:
     using ValueList = std::vector<Value>;
 
     Value(const char* key, const ValueList& value_list)
-        : key_(key), value_type_(ValueType::kObject),
+        : key_(key),
+          value_type_(ValueType::kObject),
           value_list_(std::make_unique<ValueList>(value_list)),
           reactor_([&](const rapidjson::Value& value) -> Errors
                    {
@@ -34,7 +35,8 @@ public:
     }
 
     Value(const char* key, ValueList&& value_list)
-        : key_(key), value_type_(ValueType::kObject),
+        : key_(key),
+          value_type_(ValueType::kObject),
           value_list_(std::make_unique<ValueList>(std::move(value_list))),
           reactor_([&](const rapidjson::Value& value) -> Errors
                    {
@@ -54,7 +56,8 @@ public:
     }
 
     Value(const char* key, int* p)
-        : key_(key), value_type_(ValueType::kInt),
+        : key_(key),
+          value_type_(ValueType::kInt),
           value_list_(),
           reactor_([&](const rapidjson::Value& value) -> Errors
                    {
@@ -65,7 +68,8 @@ public:
         pointer_field_.ptr_int = p;
     }
     Value(const char* key, bool* p)
-        : key_(key), value_type_(ValueType::kBool), value_list_(),
+        : key_(key),
+          value_type_(ValueType::kBool), value_list_(),
           reactor_([&](const rapidjson::Value& value) -> Errors
                    {
                        *pointer_field_.ptr_bool = value.GetBool();
@@ -75,7 +79,8 @@ public:
         pointer_field_.ptr_bool = p;
     }
     Value(const char* key, std::string* p)
-        : key_(key), value_type_(ValueType::kString), value_list_(),
+        : key_(key),
+          value_type_(ValueType::kString), value_list_(),
           reactor_([&](const rapidjson::Value& value) -> Errors
                    {
                        *pointer_field_.ptr_string = value.GetString();
@@ -107,8 +112,8 @@ public:
     }
     ~Value() {}
 
-    Errors operator()(const rapidjson::Value& value) { return reactor_(value); }
-    Errors operator()(const rapidjson::Value& value) const { return reactor_(value); }
+    inline Errors operator()(const rapidjson::Value& value) { return reactor_(value); }
+    inline Errors operator()(const rapidjson::Value& value) const { return reactor_(value); }
     inline const char* Key() { return key_; }
     inline const char* Key() const { return key_; }
     inline ValueType Type() { return value_type_; }
@@ -117,14 +122,15 @@ public:
 protected:
     const char* key_;
     ValueType value_type_;
+    std::function<Errors(const rapidjson::Value& value)> reactor_;
+    std::unique_ptr<ValueList> value_list_;
+
     union PointerField
     {
         int* ptr_int;
         bool* ptr_bool;
         std::string* ptr_string;
     } pointer_field_;
-    std::function<Errors(const rapidjson::Value& value)> reactor_;
-    std::unique_ptr<ValueList> value_list_;
 };
 
 JSON_SERIALIZER_NAMESPACE_END
