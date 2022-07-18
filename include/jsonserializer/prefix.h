@@ -16,6 +16,4 @@ enum class ValueType : int
     kObject
 };
 
-#include "rapidjson/document.h"
-
 #endif

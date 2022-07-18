@@ -2,6 +2,7 @@
 #define __JSON_SERIALIZER_PARSER_H__
 
 #include "prefix.h"
+#include "rapidjson/document.h"
 #include "errors.h"
 
 JSON_SERIALIZER_NAMESPACE_START

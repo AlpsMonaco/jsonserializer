@@ -5,7 +5,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <stack>
 #include <array>
 
 JSON_SERIALIZER_NAMESPACE_START
