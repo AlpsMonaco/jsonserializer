@@ -4,54 +4,130 @@
 #include "prefix.h"
 #include <memory>
 #include <string>
+#include <vector>
+#include <array>
 
 JSON_SERIALIZER_NAMESPACE_START
 
 class Errors
 {
 public:
-    Errors() : msg_pointer(), has_error_(false) {}
-    Errors(const std::string& msg) : msg_pointer(std::make_unique<std::string>(msg)), has_error_(true) {}
-    Errors(std::string&& msg) : msg_pointer(std::make_unique<std::string>(std::move(msg))), has_error_(true) {}
-    Errors(const Errors& errors) : msg_pointer(), has_error_(errors.has_error_)
+    enum class ErrorCode : int
     {
-        if (has_error_)
-            msg_pointer = std::make_unique<std::string>(*errors.msg_pointer);
+        kNoError,
+        kKeyNotExist,
+        kNotAInt,
+        kNotABool,
+        kNotAString,
+        kNotAObject,
+        kErrorCodeNum,
+    };
+
+    Errors(ErrorCode error_code = ErrorCode::kNoError) : node_list_pointer_(
+                                                             error_code != ErrorCode::kNoError ?
+                                                                 std::make_unique<std::vector<std::string>>() :
+                                                                 nullptr),
+                                                         error_code_(error_code)
+    {
     }
-    Errors(Errors&& errors) : msg_pointer(), has_error_(errors.has_error_)
+
+    Errors(const Errors& errors, const char* node_name)
+        : error_code_(errors.error_code_),
+          node_list_pointer_(
+              std::make_unique<std::vector<std::string>>(
+                  *errors.node_list_pointer_))
     {
-        if (has_error_)
-            msg_pointer = std::move(errors.msg_pointer);
+        node_list_pointer_->emplace_back(node_name);
+    }
+    Errors(Errors&& errors, const char* node_name)
+        : error_code_(errors.error_code_),
+          node_list_pointer_(std::move(errors.node_list_pointer_))
+    {
+        node_list_pointer_->emplace_back(node_name);
+    }
+    Errors(const Errors& errors) : node_list_pointer_(), error_code_(errors.error_code_)
+    {
+        if (*this)
+            node_list_pointer_ =
+                std::make_unique<std::vector<std::string>>(*errors.node_list_pointer_);
+    }
+    Errors(Errors&& errors) : node_list_pointer_(), error_code_(errors.error_code_)
+    {
+        if (*this)
+            node_list_pointer_ =
+                std::make_unique<std::vector<std::string>>(std::move(*errors.node_list_pointer_));
     }
     ~Errors() {}
 
-    operator bool() { return has_error_; }
+    operator bool() { return error_code_ > ErrorCode::kNoError; }
 
     Errors& operator=(const Errors& errors)
     {
-        if (has_error_)
-            msg_pointer.release();
-        has_error_ = errors.has_error_;
-        if (has_error_)
-            msg_pointer = std::make_unique<std::string>(*errors.msg_pointer);
+        if (*this)
+            node_list_pointer_.release();
+        error_code_ = errors.error_code_;
+        if (*this)
+            node_list_pointer_ =
+                std::make_unique<std::vector<std::string>>(*errors.node_list_pointer_);
         return *this;
     }
 
     Errors& operator=(Errors&& errors)
     {
-        if (has_error_)
-            msg_pointer.release();
-        has_error_ = errors.has_error_;
-        if (has_error_)
-            msg_pointer = std::move(errors.msg_pointer);
+        if (*this)
+            node_list_pointer_.release();
+        error_code_ = errors.error_code_;
+        if (*this)
+            node_list_pointer_ = std::move(errors.node_list_pointer_);
         return *this;
     }
 
-    inline const char* operator()() { return msg_pointer->c_str(); }
+    inline std::string operator()()
+    {
+        std::string result;
+        for (auto it = node_list_pointer_->rbegin(); it < node_list_pointer_->rend(); it++)
+        {
+            result += *it;
+            result += ".";
+        }
+        if (result.size() > 0)
+        {
+            result = "key \"" + result;
+            result[result.size() - 1] = '"';
+            result += " ";
+        }
+        return result + ErrorDict::Get().Query(error_code_);
+    }
 
 protected:
-    std::unique_ptr<std::string> msg_pointer;
-    bool has_error_;
+    class ErrorDict
+    {
+        ErrorDict() : error_code_map_()
+        {
+            Set(ErrorCode::kKeyNotExist, "not exist");
+            Set(ErrorCode::kNotAInt, "is not a int");
+            Set(ErrorCode::kNotABool, "is not a bool");
+            Set(ErrorCode::kNotAString, "is not a string");
+            Set(ErrorCode::kNotAObject, "is not a object");
+        }
+        std::array<const char*,
+                   static_cast<size_t>(ErrorCode::kErrorCodeNum)>
+            error_code_map_;
+
+        inline void Set(ErrorCode error_code, const char* msg) { error_code_map_[static_cast<int>(error_code)] = msg; }
+
+    public:
+        ~ErrorDict() {}
+        static ErrorDict& Get()
+        {
+            static ErrorDict error_dict;
+            return error_dict;
+        }
+
+        inline const char* Query(ErrorCode error_code) { return error_code_map_[static_cast<int>(error_code)]; }
+    };
+    ErrorCode error_code_;
+    std::unique_ptr<std::vector<std::string>> node_list_pointer_;
 };
 
 JSON_SERIALIZER_NAMESPACE_END

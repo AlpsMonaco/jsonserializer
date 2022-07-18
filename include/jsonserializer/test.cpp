@@ -8,14 +8,14 @@ using namespace jsonserializer;
 struct Foo
 {
     int I;
-    const char* S;
+    std::string S;
     bool B;
 };
 
 struct Bar
 {
     int I;
-    const char* S;
+    std::string S;
     bool B;
     Foo f;
 };
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     Errors err = js.Unseralize({{"int", &bar.I},
                                 {"string", &bar.S},
                                 {"bool", &bar.B},
-                                {"object", {{{"string", &bar.f.S}, {"int", &bar.f.B}, {"object", {{"int", &IValue}}}}}}});
+                                {"object", {{{"string", &bar.f.S}, {"int", &bar.f.I}, {"object", {{"string", &IValue}}}}}}});
 
     if (err)
         cout << err();
@@ -57,6 +57,5 @@ int main(int argc, char** argv)
         cout << bar.B << endl;
         cout << bar.f.I << endl;
         cout << bar.f.S << endl;
-        cout << bar.f.B << endl;
     }
 }

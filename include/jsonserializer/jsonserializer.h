@@ -22,7 +22,10 @@ public:
         {
             errors = Parser::Parse<Value>(d_, v);
             if (errors)
+            {
+                errors = Errors(std::move(errors), v.Key());
                 break;
+            }
         }
         return errors;
     }

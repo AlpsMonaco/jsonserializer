@@ -12,20 +12,20 @@ public:
     template <typename ExternValueType>
     static Errors Parse(const rapidjson::Value& object, const ExternValueType& value)
     {
-        if (!object.HasMember(value.Key())) { return Errors(std::string(value.Key()) + " not exist"); }
+        if (!object.HasMember(value.Key())) { return Errors(Errors::ErrorCode::kKeyNotExist); }
         switch (value.Type())
         {
         case ValueType::kInt:
-            if (!object[value.Key()].IsInt()) { return Errors(std::string(value.Key()) + " is not a int"); }
+            if (!object[value.Key()].IsInt()) { return Errors(Errors::ErrorCode::kNotAInt); }
             break;
         case ValueType::kString:
-            if (!object[value.Key()].IsString()) { return Errors(std::string(value.Key()) + " is not a string"); }
+            if (!object[value.Key()].IsString()) { return Errors(Errors::ErrorCode::kNotAString); }
             break;
         case ValueType::kBool:
-            if (!object[value.Key()].IsBool()) { return Errors(std::string(value.Key()) + " is not a bool"); }
+            if (!object[value.Key()].IsBool()) { return Errors(Errors::ErrorCode::kNotABool); }
             break;
         case ValueType::kObject:
-            if (!object[value.Key()].IsObject()) { return Errors(std::string(value.Key()) + " is not a object"); }
+            if (!object[value.Key()].IsObject()) { return Errors(Errors::ErrorCode::kNotAObject); }
             break;
         }
         return value(object[value.Key()]);
