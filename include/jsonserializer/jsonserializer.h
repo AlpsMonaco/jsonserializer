@@ -9,12 +9,18 @@ JSON_SERIALIZER_NAMESPACE_START
 class JsonSerializer
 {
 public:
-    bool Seralize();
+    bool Seralize()
+    {
+        THROW_NOT_IMPLEMENT;
+        return true;
+    }
+
     inline bool Parse(const char* json)
     {
         d_.Parse(json);
         return !d_.HasParseError();
     }
+
     Errors Unseralize(const Value::ValueList& value_list)
     {
         Errors errors;

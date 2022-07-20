@@ -13,6 +13,76 @@ class Value
 public:
     using ValueList = std::vector<Value>;
 
+    template <typename T>
+    struct IsPlainType
+    {
+        constexpr static bool value = (std::is_arithmetic<T>::value || std::is_same<std::string, T>::value);
+    };
+
+    template <typename T, typename = void>
+    struct TypeId
+    {
+        constexpr static ValueType value = ValueType::kObject;
+        static bool CheckType(const rapidjson::Value& value) { return value.IsObject(); }
+    };
+
+    template <typename T>
+    struct TypeId<T, std::enable_if<std::is_integral<T>::value>::type>
+    {
+        constexpr static ValueType value = ValueType::kInt;
+        static bool CheckType(const rapidjson::Value& value) { return value.IsInt(); }
+    };
+
+    template <typename T>
+    struct TypeId<T, std::enable_if<std::is_same<std::string, T>::value>::type>
+    {
+        constexpr static ValueType value = ValueType::kString;
+        static bool CheckType(const rapidjson::Value& value) { return value.IsString(); }
+    };
+
+    template <>
+    struct TypeId<bool, void>
+    {
+        constexpr static ValueType value = ValueType::kBool;
+        static bool CheckType(const rapidjson::Value& value) { return value.IsBool(); }
+    };
+
+    using ObjectType = void;
+    template <typename T, typename = ObjectType>
+    class Array
+    {
+    public:
+        using ListType = std::vector<T>;
+        Array() {}
+        ~Array() {}
+
+        static constexpr ValueType type_id = TypeId<T>;
+        inline std::vector<T>& operator std::vector<T>() { return list_; }
+        inline std::vector<T>& Get() { return list_; }
+
+    protected:
+        std::vector<T> list_;
+    };
+
+    template <typename T>
+    class Array<T, std::enable_if<IsPlainType<T>::value>::type>
+    {
+    public:
+        using ListType = std::vector<T>;
+        Array() {}
+        ~Array() {}
+
+        static constexpr ValueType type_id = TypeId<T>;
+        inline std::vector<T>& operator std::vector<T>() { return list_; }
+        inline std::vector<T>& Get() { return list_; }
+        Errors operator()(const rapidjson::Value& value)
+        {
+        }
+
+    protected:
+        std::vector<T> list_;
+    };
+
     Value(const char* key, const ValueList& value_list)
         : key_(key),
           value_type_(ValueType::kObject),
