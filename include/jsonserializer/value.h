@@ -75,7 +75,7 @@ public:
         static constexpr ValueType type_id = TypeId<T>;
         inline std::vector<T>& operator std::vector<T>() { return list_; }
         inline std::vector<T>& Get() { return list_; }
-        Errors operator()(const rapidjson::Value& value)
+        Error operator()(const rapidjson::Value& value)
         {
         }
 
@@ -87,15 +87,15 @@ public:
         : key_(key),
           value_type_(ValueType::kObject),
           value_list_(std::make_unique<ValueList>(value_list)),
-          reactor_([&](const rapidjson::Value& value) -> Errors
+          reactor_([&](const rapidjson::Value& value) -> Error
                    {
-                       Errors errors;
+                       Error errors;
                        for (const auto& v : *(value_list_))
                        {
                            errors = Parser::Parse<Value>(value, v);
                            if (errors)
                            {
-                               errors = Errors(errors, v.Key());
+                               errors = Error(errors, v.Key());
                                break;
                            }
                        }
@@ -108,15 +108,15 @@ public:
         : key_(key),
           value_type_(ValueType::kObject),
           value_list_(std::make_unique<ValueList>(std::move(value_list))),
-          reactor_([&](const rapidjson::Value& value) -> Errors
+          reactor_([&](const rapidjson::Value& value) -> Error
                    {
-                       Errors errors;
+                       Error errors;
                        for (const auto& v : *(value_list_))
                        {
                            errors = Parser::Parse<Value>(value, v);
                            if (errors)
                            {
-                               errors = Errors(std::move(errors), v.Key());
+                               errors = Error(std::move(errors), v.Key());
                                break;
                            }
                        }
@@ -129,10 +129,10 @@ public:
         : key_(key),
           value_type_(ValueType::kInt),
           value_list_(),
-          reactor_([&](const rapidjson::Value& value) -> Errors
+          reactor_([&](const rapidjson::Value& value) -> Error
                    {
                        *pointer_field_.ptr_int = value.GetInt();
-                       return Errors();
+                       return Error();
                    })
     {
         pointer_field_.ptr_int = p;
@@ -140,10 +140,10 @@ public:
     Value(const char* key, bool* p)
         : key_(key),
           value_type_(ValueType::kBool), value_list_(),
-          reactor_([&](const rapidjson::Value& value) -> Errors
+          reactor_([&](const rapidjson::Value& value) -> Error
                    {
                        *pointer_field_.ptr_bool = value.GetBool();
-                       return Errors();
+                       return Error();
                    })
     {
         pointer_field_.ptr_bool = p;
@@ -151,10 +151,10 @@ public:
     Value(const char* key, std::string* p)
         : key_(key),
           value_type_(ValueType::kString), value_list_(),
-          reactor_([&](const rapidjson::Value& value) -> Errors
+          reactor_([&](const rapidjson::Value& value) -> Error
                    {
                        *pointer_field_.ptr_string = value.GetString();
-                       return Errors();
+                       return Error();
                    })
     {
         pointer_field_.ptr_string = p;
@@ -182,8 +182,8 @@ public:
     }
     ~Value() {}
 
-    inline Errors operator()(const rapidjson::Value& value) { return reactor_(value); }
-    inline Errors operator()(const rapidjson::Value& value) const { return reactor_(value); }
+    inline Error operator()(const rapidjson::Value& value) { return reactor_(value); }
+    inline Error operator()(const rapidjson::Value& value) const { return reactor_(value); }
     inline const char* Key() { return key_; }
     inline const char* Key() const { return key_; }
     inline ValueType Type() { return value_type_; }
@@ -192,7 +192,7 @@ public:
 protected:
     const char* key_;
     ValueType value_type_;
-    std::function<Errors(const rapidjson::Value& value)> reactor_;
+    std::function<Error(const rapidjson::Value& value)> reactor_;
     std::unique_ptr<ValueList> value_list_;
 
     union PointerField

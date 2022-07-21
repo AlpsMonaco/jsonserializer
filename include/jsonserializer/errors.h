@@ -9,7 +9,7 @@
 
 JSON_SERIALIZER_NAMESPACE_START
 
-class Errors
+class Error
 {
 public:
     enum class ErrorCode : int
@@ -26,12 +26,12 @@ public:
     using NodeList        = std::vector<std::string>;
     using NodeListPointer = std::unique_ptr<NodeList>;
 
-    Errors(ErrorCode error_code = ErrorCode::kNoError) : node_list_pointer_(),
+    Error(ErrorCode error_code = ErrorCode::kNoError) : node_list_pointer_(),
                                                          error_code_(error_code)
     {
     }
 
-    Errors(const Errors& errors, const char* node_name)
+    Error(const Error& errors, const char* node_name)
         : error_code_(errors.error_code_),
           node_list_pointer_(
               errors.node_list_pointer_.get() != nullptr ?
@@ -40,7 +40,7 @@ public:
     {
         node_list_pointer_->emplace_back(node_name);
     }
-    Errors(Errors&& errors, const char* node_name)
+    Error(Error&& errors, const char* node_name)
         : error_code_(errors.error_code_),
           node_list_pointer_(
               errors.node_list_pointer_.get() != nullptr ?
@@ -49,23 +49,23 @@ public:
     {
         node_list_pointer_->emplace_back(node_name);
     }
-    Errors(const Errors& errors) : node_list_pointer_(), error_code_(errors.error_code_)
+    Error(const Error& errors) : node_list_pointer_(), error_code_(errors.error_code_)
     {
         if (*this)
             node_list_pointer_ =
                 std::make_unique<NodeList>(*errors.node_list_pointer_);
     }
-    Errors(Errors&& errors) : node_list_pointer_(), error_code_(errors.error_code_)
+    Error(Error&& errors) : node_list_pointer_(), error_code_(errors.error_code_)
     {
         if (*this)
             node_list_pointer_ =
                 std::make_unique<NodeList>(std::move(*errors.node_list_pointer_));
     }
-    ~Errors() {}
+    ~Error() {}
 
     operator bool() { return error_code_ > ErrorCode::kNoError; }
 
-    Errors& operator=(const Errors& errors)
+    Error& operator=(const Error& errors)
     {
         if (*this)
             node_list_pointer_.release();
@@ -76,7 +76,7 @@ public:
         return *this;
     }
 
-    Errors& operator=(Errors&& errors)
+    Error& operator=(Error&& errors)
     {
         if (*this)
             node_list_pointer_.release();
@@ -103,7 +103,7 @@ public:
         return result + ErrorDict::Get().Query(error_code_);
     }
     
-    inline std::string operator()() const { return const_cast<Errors&>(*this)(); }
+    inline std::string operator()() const { return const_cast<Error&>(*this)(); }
     inline ErrorCode Code() { return error_code_; }
     inline ErrorCode Code() const { return error_code_; }
     inline std::string Message() { return (*this)(); }

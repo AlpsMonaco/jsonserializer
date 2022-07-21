@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     JsonSerializer js;
     if (!js.Parse(json))
         return 1;
-    Errors err = js.Unseralize({{"int", &bar.I},
+    Error err = js.Unseralize({{"int", &bar.I},
                                 {"string", &bar.S},
                                 {"bool", &bar.B},
                                 {"object", {{{"string", &bar.f.S}, {"int", &bar.f.I}, {"object", {{"int", &IValue}}}}}}});

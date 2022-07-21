@@ -21,15 +21,15 @@ public:
         return !d_.HasParseError();
     }
 
-    Errors Unseralize(const Value::ValueList& value_list)
+    Error Unseralize(const Value::ValueList& value_list)
     {
-        Errors errors;
+        Error errors;
         for (const auto& v : value_list)
         {
             errors = Parser::Parse<Value>(d_, v);
             if (errors)
             {
-                errors = Errors(std::move(errors), v.Key());
+                errors = Error(std::move(errors), v.Key());
                 break;
             }
         }
