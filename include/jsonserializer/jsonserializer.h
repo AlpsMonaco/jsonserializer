@@ -1,7 +1,7 @@
 #ifndef __JSON_SERIALIZER_H__
 #define __JSON_SERIALIZER_H__
 
-#include "value.h"
+#include "array.h"
 #include <string>
 
 JSON_SERIALIZER_NAMESPACE_START

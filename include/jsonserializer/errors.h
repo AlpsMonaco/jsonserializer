@@ -20,6 +20,8 @@ public:
         kNotABool,
         kNotAString,
         kNotAObject,
+        kNotAnArray,
+        kArrayTypeNotMatch,
         kErrorCodeNum,
     };
 
@@ -27,7 +29,7 @@ public:
     using NodeListPointer = std::unique_ptr<NodeList>;
 
     Error(ErrorCode error_code = ErrorCode::kNoError) : node_list_pointer_(),
-                                                         error_code_(error_code)
+                                                        error_code_(error_code)
     {
     }
 
@@ -102,7 +104,7 @@ public:
         }
         return result + ErrorDict::Get().Query(error_code_);
     }
-    
+
     inline std::string operator()() const { return const_cast<Error&>(*this)(); }
     inline ErrorCode Code() { return error_code_; }
     inline ErrorCode Code() const { return error_code_; }
@@ -121,11 +123,10 @@ protected:
             Set(ErrorCode::kNotABool, "is not a bool");
             Set(ErrorCode::kNotAString, "is not a string");
             Set(ErrorCode::kNotAObject, "is not a object");
+            Set(ErrorCode::kNotAnArray, "is not an array");
+            Set(ErrorCode::kArrayTypeNotMatch, "type of array dismatch");
         }
-        std::array<const char*,
-                   static_cast<size_t>(ErrorCode::kErrorCodeNum)>
-            error_code_map_;
-
+        std::array<const char*, static_cast<size_t>(ErrorCode::kErrorCodeNum)> error_code_map_;
         inline void Set(ErrorCode error_code, const char* msg) { error_code_map_[static_cast<int>(error_code)] = msg; }
 
     public:

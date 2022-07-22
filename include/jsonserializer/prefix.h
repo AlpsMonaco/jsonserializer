@@ -13,7 +13,8 @@ enum class ValueType : int
     kInt,
     kString,
     kBool,
-    kObject
+    kObject,
+    kArray,
 };
 
 #endif

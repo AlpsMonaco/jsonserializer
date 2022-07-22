@@ -7,55 +7,69 @@ using namespace jsonserializer;
 
 struct Foo
 {
-    int I;
-    std::string S;
-    bool B;
+    int i;
+    std::string s;
 };
 
 struct Bar
 {
-    int I;
-    std::string S;
-    bool B;
-    Foo f;
+    Foo foo;
+    int bar_i;
+    std::vector<int> int_list;
+    std::vector<Foo> foo_list;
 };
+
+const char* json = R"(
+{
+    "foo":
+    {
+        "i":1,
+        "s":"hello world"
+    },
+    "bar_i":2,
+    "int_list":[1,2,3,4],
+    "foo_list":
+    [
+        {"i":1,"s":"hello world 1"},
+        {"i":2,"s":"hello world 2"}
+    ]
+}
+)";
 
 int main(int argc, char** argv)
 {
-    const char* json = R"(
-        {
-            "int":1,
-            "string":"string",
-            "bool":true,
-            "object":
-            {
-                "int":2,
-                "string":"string",
-                "object":
-                {
-                    "int":3,
-                    "string":"string"
-                }
-            }
-        }
-    )";
-    int IValue;
     Bar bar;
     JsonSerializer js;
     if (!js.Parse(json))
-        return 1;
-    Error err = js.Unseralize({{"int", &bar.I},
-                                {"string", &bar.S},
-                                {"bool", &bar.B},
-                                {"object", {{{"string", &bar.f.S}, {"int", &bar.f.I}, {"object", {{"int", &IValue}}}}}}});
-
+        cout << "parse error" << endl;
+    auto err = js.Unseralize(
+        {{"foo", {
+                     {"i", &bar.foo.i},
+                     {"s", &bar.foo.s},
+                 }},
+         {"bar_i", &bar.bar_i},
+         {"int_list", Array<int>(&bar.int_list)},
+         {"foo_list", Array<Foo>([](Foo* p) -> Value::ValueList
+                                 {
+                                     return {
+                                         {"i", &p->i},
+                                         /* {"s", &p->s}, */
+                                     };
+                                 },
+                                 &bar.foo_list)}});
     if (err)
+    {
         cout << err();
-    else{
-        cout << bar.I << endl;
-        cout << bar.S << endl;
-        cout << bar.B << endl;
-        cout << bar.f.I << endl;
-        cout << bar.f.S << endl;
+        return 1;
+    }
+    cout << bar.bar_i << endl;
+    cout << bar.foo.i << endl;
+    cout << bar.foo.s << endl;
+    for (const auto& v : bar.int_list)
+        cout << v << endl;
+    for (const auto& v : bar.foo_list)
+    {
+        cout << v.i << endl;
+        cout << v.s << endl;
     }
 }

@@ -17,7 +17,9 @@ public:
         switch (value.Type())
         {
         case ValueType::kInt:
-            if (!object[value.Key()].IsInt()) { return Error(Error::ErrorCode::kNotAInt); }
+            if (!object[value.Key()].IsInt()) { return Error(Error::ErrorCode::kNotAInt); }else{
+                value.SetInt(object[value.Key()]);return Error();
+            }
             break;
         case ValueType::kString:
             if (!object[value.Key()].IsString()) { return Error(Error::ErrorCode::kNotAString); }
@@ -27,6 +29,9 @@ public:
             break;
         case ValueType::kObject:
             if (!object[value.Key()].IsObject()) { return Error(Error::ErrorCode::kNotAObject); }
+            break;
+        case ValueType::kArray:
+            if (!object[value.Key()].IsArray()) { return Error(Error::ErrorCode::kNotAnArray); }
             break;
         }
         return value(object[value.Key()]);

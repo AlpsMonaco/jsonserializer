@@ -13,75 +13,17 @@ class Value
 public:
     using ValueList = std::vector<Value>;
 
-    template <typename T>
-    struct IsPlainType
+    template <typename ArrayType>
+    Value(const char* key, const ArrayType& array)
+        : key_(key),
+          value_type_(ValueType::kArray),
+          value_list_(),
+          reactor_([&](const rapidjson::Value& value) -> Error
+                   {
+                       return array(value);
+                   })
     {
-        constexpr static bool value = (std::is_arithmetic<T>::value || std::is_same<std::string, T>::value);
-    };
-
-    template <typename T, typename = void>
-    struct TypeId
-    {
-        constexpr static ValueType value = ValueType::kObject;
-        static bool CheckType(const rapidjson::Value& value) { return value.IsObject(); }
-    };
-
-    template <typename T>
-    struct TypeId<T, std::enable_if<std::is_integral<T>::value>::type>
-    {
-        constexpr static ValueType value = ValueType::kInt;
-        static bool CheckType(const rapidjson::Value& value) { return value.IsInt(); }
-    };
-
-    template <typename T>
-    struct TypeId<T, std::enable_if<std::is_same<std::string, T>::value>::type>
-    {
-        constexpr static ValueType value = ValueType::kString;
-        static bool CheckType(const rapidjson::Value& value) { return value.IsString(); }
-    };
-
-    template <>
-    struct TypeId<bool, void>
-    {
-        constexpr static ValueType value = ValueType::kBool;
-        static bool CheckType(const rapidjson::Value& value) { return value.IsBool(); }
-    };
-
-    using ObjectType = void;
-    template <typename T, typename = ObjectType>
-    class Array
-    {
-    public:
-        using ListType = std::vector<T>;
-        Array() {}
-        ~Array() {}
-
-        static constexpr ValueType type_id = TypeId<T>;
-        inline std::vector<T>& operator std::vector<T>() { return list_; }
-        inline std::vector<T>& Get() { return list_; }
-
-    protected:
-        std::vector<T> list_;
-    };
-
-    template <typename T>
-    class Array<T, std::enable_if<IsPlainType<T>::value>::type>
-    {
-    public:
-        using ListType = std::vector<T>;
-        Array() {}
-        ~Array() {}
-
-        static constexpr ValueType type_id = TypeId<T>;
-        inline std::vector<T>& operator std::vector<T>() { return list_; }
-        inline std::vector<T>& Get() { return list_; }
-        Error operator()(const rapidjson::Value& value)
-        {
-        }
-
-    protected:
-        std::vector<T> list_;
-    };
+    }
 
     Value(const char* key, const ValueList& value_list)
         : key_(key),
@@ -189,6 +131,11 @@ public:
     inline ValueType Type() { return value_type_; }
     inline ValueType Type() const { return value_type_; }
 
+    void SetInt(const rapidjson::Value& value) const
+    {
+        *pointer_field_.ptr_int = value.GetInt();
+    }
+
 protected:
     const char* key_;
     ValueType value_type_;
@@ -201,6 +148,11 @@ protected:
         bool* ptr_bool;
         std::string* ptr_string;
     } pointer_field_;
+
+    static void SetInt(const rapidjson::Value& rapidjson_value, Value& value)
+    {
+        *value.pointer_field_.ptr_int = rapidjson_value.GetInt();
+    }
 };
 
 JSON_SERIALIZER_NAMESPACE_END
