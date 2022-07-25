@@ -53,7 +53,7 @@ int main(int argc, char** argv)
                                  {
                                      return {
                                          {"i", &p->i},
-                                         /* {"s", &p->s}, */
+                                         {"s", &p->s},
                                      };
                                  },
                                  &bar.foo_list)}});

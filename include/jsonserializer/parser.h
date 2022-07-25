@@ -14,27 +14,29 @@ public:
     static Error Parse(const rapidjson::Value& object, const ExternValueType& value)
     {
         if (!object.HasMember(value.Key())) { return Error(Error::ErrorCode::kKeyNotExist); }
+        const rapidjson::Value& temp_object = object[value.Key()];
         switch (value.Type())
         {
         case ValueType::kInt:
-            if (!object[value.Key()].IsInt()) { return Error(Error::ErrorCode::kNotAInt); }else{
-                value.SetInt(object[value.Key()]);return Error();
-            }
-            break;
+            if (!temp_object.IsInt())
+                return Error(Error::ErrorCode::kNotAInt);
+            return value.SetInt(temp_object);
         case ValueType::kString:
-            if (!object[value.Key()].IsString()) { return Error(Error::ErrorCode::kNotAString); }
-            break;
+            if (!temp_object.IsString())
+                return Error(Error::ErrorCode::kNotAString);
+            return value.SetString(temp_object);
         case ValueType::kBool:
-            if (!object[value.Key()].IsBool()) { return Error(Error::ErrorCode::kNotABool); }
-            break;
+            if (!temp_object.IsBool())
+                return Error(Error::ErrorCode::kNotABool);
+            return value.SetBool(temp_object);
         case ValueType::kObject:
-            if (!object[value.Key()].IsObject()) { return Error(Error::ErrorCode::kNotAObject); }
-            break;
-        case ValueType::kArray:
-            if (!object[value.Key()].IsArray()) { return Error(Error::ErrorCode::kNotAnArray); }
-            break;
+            if (!temp_object.IsObject())
+                return Error(Error::ErrorCode::kNotAObject);
+            return value.SetObject(temp_object);
         }
-        return value(object[value.Key()]);
+        if (!temp_object.IsArray())
+            return Error(Error::ErrorCode::kNotAnArray);
+        return value.SetArray(temp_object);
     }
 };
 
