@@ -10,7 +10,6 @@ struct Foo
     int i;
     std::string s;
 };
-
 struct Bar
 {
     Foo foo;
@@ -18,45 +17,25 @@ struct Bar
     std::vector<int> int_list;
     std::vector<Foo> foo_list;
 };
-
-const char* json = R"(
-{
-    "foo":
-    {
-        "i":1,
-        "s":"hello world"
-    },
-    "bar_i":2,
-    "int_list":[1,2,3,4],
-    "foo_list":
-    [
-        {"i":1,"s":"hello world 1"},
-        {"i":2,"s":"hello world 2"}
-    ]
-}
-)";
-
 int main(int argc, char** argv)
 {
-    Bar bar;
     JsonSerializer js;
+    const char* json = R"(
+{
+    "foo":{"i":1,"s":"hello world"},
+    "bar_i":2,
+    "int_list":[1,2,3,4],
+    "foo_list":[{"i":1,"s":"hello world 1"},{"i":2,"s":"hello world 2"}]
+}
+)";
     if (!js.Parse(json))
         cout << "parse error" << endl;
+    Bar bar;
     auto err = js.Unseralize(
-        {{"foo", {
-                     {"i", &bar.foo.i},
-                     {"s", &bar.foo.s},
-                 }},
+        {{"foo", {{"i", &bar.foo.i},{"s", &bar.foo.s},}},
          {"bar_i", &bar.bar_i},
          {"int_list", Array<int>(&bar.int_list)},
-         {"foo_list", Array<Foo>([](Foo* p) -> Value::ValueList
-                                 {
-                                     return {
-                                         {"i", &p->i},
-                                         {"s", &p->s},
-                                     };
-                                 },
-                                 &bar.foo_list)}});
+         {"foo_list", Array<Foo>([](Foo* p) -> Value::ValueList{return {{"i", &p->i},{"s", &p->s},};},&bar.foo_list)}});
     if (err)
     {
         cout << err();
