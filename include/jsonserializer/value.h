@@ -57,6 +57,11 @@ public:
           value_type_(ValueType::kInt64),
           value_list_() { pointer_field_.ptr_int64 = p; }
 
+    Value(const char* key, double* p)
+        : key_(key),
+          value_type_(ValueType::kDouble),
+          value_list_() { pointer_field_.ptr_double = p; }
+
     Value(const char* key, bool* p)
         : key_(key),
           value_type_(ValueType::kBool),
@@ -119,6 +124,12 @@ public:
         return Error();
     }
 
+    Error SetDouble(const rapidjson::Value& value)
+    {
+        *pointer_field_.ptr_double = value.GetDouble();
+        return Error();
+    }
+
     Error SetObject(const rapidjson::Value& value)
     {
         Error error;
@@ -138,6 +149,7 @@ public:
     Error SetInt(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetInt(value); }
     Error SetInt64(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetInt64(value); }
     Error SetString(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetString(value); }
+    Error SetDouble(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetDouble(value); }
     Error SetBool(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetBool(value); }
     Error SetObject(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetObject(value); }
     Error SetArray(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetArray(value); }
@@ -149,6 +161,7 @@ protected:
     std::unique_ptr<ValueList> value_list_;
     union PointerField
     {
+        double* ptr_double;
         int64_t* ptr_int64;
         int* ptr_int;
         bool* ptr_bool;

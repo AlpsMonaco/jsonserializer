@@ -17,6 +17,7 @@ public:
         kNoError,
         kKeyNotExist,
         kNotAInt,
+        kNotADouble,
         kNotABool,
         kNotAString,
         kNotAObject,
@@ -121,6 +122,7 @@ protected:
             Set(ErrorCode::kKeyNotExist, "not exist");
             Set(ErrorCode::kNotAInt, "is not a int");
             Set(ErrorCode::kNotABool, "is not a bool");
+            Set(ErrorCode::kNotADouble, "is not a double");
             Set(ErrorCode::kNotAString, "is not a string");
             Set(ErrorCode::kNotAObject, "is not a object");
             Set(ErrorCode::kNotAnArray, "is not an array");

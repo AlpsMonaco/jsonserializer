@@ -25,6 +25,10 @@ public:
             if (!temp_object.IsInt64())
                 return Error(Error::ErrorCode::kNotAInt);
             return value.SetInt64(temp_object);
+        case ValueType::kDouble:
+            if (!temp_object.IsDouble())
+                return Error(Error::ErrorCode::kNotADouble);
+            return value.SetDouble(temp_object);
         case ValueType::kString:
             if (!temp_object.IsString())
                 return Error(Error::ErrorCode::kNotAString);

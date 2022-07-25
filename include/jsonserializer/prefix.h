@@ -12,6 +12,7 @@ enum class ValueType : int
 {
     kInt,
     kInt64,
+    kDouble,
     kString,
     kBool,
     kObject,
