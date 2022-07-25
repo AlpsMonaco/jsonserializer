@@ -21,6 +21,10 @@ public:
             if (!temp_object.IsInt())
                 return Error(Error::ErrorCode::kNotAInt);
             return value.SetInt(temp_object);
+        case ValueType::kInt64:
+            if (!temp_object.IsInt64())
+                return Error(Error::ErrorCode::kNotAInt);
+            return value.SetInt64(temp_object);
         case ValueType::kString:
             if (!temp_object.IsString())
                 return Error(Error::ErrorCode::kNotAString);

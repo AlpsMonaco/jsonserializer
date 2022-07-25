@@ -136,6 +136,7 @@ public:
 
     Error SetArray(const rapidjson::Value& value) { return array_setter_(value); }
     Error SetInt(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetInt(value); }
+    Error SetInt64(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetInt64(value); }
     Error SetString(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetString(value); }
     Error SetBool(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetBool(value); }
     Error SetObject(const rapidjson::Value& value) const { return const_cast<Value&>(*this).SetObject(value); }
