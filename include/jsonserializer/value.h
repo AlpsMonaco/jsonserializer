@@ -52,6 +52,11 @@ public:
           value_type_(ValueType::kInt),
           value_list_() { pointer_field_.ptr_int = p; }
 
+    Value(const char* key, int64_t* p)
+        : key_(key),
+          value_type_(ValueType::kInt64),
+          value_list_() { pointer_field_.ptr_int64 = p; }
+
     Value(const char* key, bool* p)
         : key_(key),
           value_type_(ValueType::kBool),
@@ -96,6 +101,12 @@ public:
         return Error();
     }
 
+    Error SetInt64(const rapidjson::Value& value)
+    {
+        *pointer_field_.ptr_int64 = value.GetInt64();
+        return Error();
+    }
+
     Error SetString(const rapidjson::Value& value)
     {
         *pointer_field_.ptr_string = value.GetString();
@@ -137,6 +148,7 @@ protected:
     std::unique_ptr<ValueList> value_list_;
     union PointerField
     {
+        int64_t* ptr_int64;
         int* ptr_int;
         bool* ptr_bool;
         std::string* ptr_string;
