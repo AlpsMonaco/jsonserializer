@@ -169,6 +169,8 @@ protected:
     } pointer_field_;
 };
 
+using Object = Value::ValueList;
+
 JSON_SERIALIZER_NAMESPACE_END
 
 #endif

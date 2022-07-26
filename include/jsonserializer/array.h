@@ -67,10 +67,10 @@ public:
         for (rapidjson::SizeType i = 0; i < arr.Size(); i++)
         {
             const rapidjson::Value& value = arr[i];
-            if(!value.IsObject())
-                 return Error(Error::ErrorCode::kNotAObject);
+            if (!value.IsObject())
+                return Error(Error::ErrorCode::kNotAObject);
             DataType data;
-            auto value_list = handler_(&data);
+            auto value_list    = handler_(&data);
             DataType* data_ptr = &data;
             Error error;
             for (const auto& v : value_list)
@@ -114,6 +114,8 @@ public:
 protected:
     DataList* list_ptr_;
 };
+
+using ArrayMapList = Object;
 
 JSON_SERIALIZER_NAMESPACE_END
 #endif
