@@ -7,12 +7,13 @@
             "args": [
                 "/Zi",
                 "/EHsc",
+                "/MDd",
                 "/nologo",
-                "/Fe${workspaceFolder}\\main.exe",
+                "/Fe${workspaceFolder}\\bin\\test.exe",
                 "*.cpp"
             ],
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
                 "$msCompile"

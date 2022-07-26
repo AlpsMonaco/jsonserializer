@@ -32,10 +32,20 @@ int main(int argc, char** argv)
         cout << "parse error" << endl;
     Bar bar;
     auto err = js.Unseralize(
-        {{"foo", {{"i", &bar.foo.i},{"s", &bar.foo.s},}},
+        {{"foo", {
+                     {"i", &bar.foo.i},
+                     {"s", &bar.foo.s},
+                 }},
          {"bar_i", &bar.bar_i},
          {"int_list", Array<int>(&bar.int_list)},
-         {"foo_list", Array<Foo>([](Foo* p) -> Value::ValueList{return {{"i", &p->i},{"s", &p->s},};},&bar.foo_list)}});
+         {"foo_list", Array<Foo>([](Foo* p) -> Value::ValueList
+                                 {
+                                     return {
+                                         {"i", &p->i},
+                                         {"s", &p->s},
+                                     };
+                                 },
+                                 &bar.foo_list)}});
     if (err)
     {
         cout << err();
