@@ -13,7 +13,6 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}\\bin",
             "environment": [],
-            "console": "externalTerminal",
             "preLaunchTask": "C/C++: cl.exe 生成活动文件"
         }
     ]
