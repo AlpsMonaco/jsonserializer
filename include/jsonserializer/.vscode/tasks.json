@@ -10,10 +10,10 @@
                 "/MDd",
                 "/nologo",
                 "/Fe${workspaceFolder}\\bin\\test.exe",
-                "*.cpp"
+                "${workspaceFolder}\\*.cpp"
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}\\bin"
             },
             "problemMatcher": [
                 "$msCompile"
