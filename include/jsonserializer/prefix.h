@@ -6,7 +6,14 @@
     {
 
 #define JSON_SERIALIZER_NAMESPACE_END }
+
+
+#ifdef _WIN32
+#include <exception>
 #define THROW_NOT_IMPLEMENT throw std::exception("not implement yet");
+#else
+#define THROW_NOT_IMPLEMENT
+#endif
 
 enum class ValueType : int
 {
