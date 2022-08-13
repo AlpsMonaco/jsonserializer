@@ -20,7 +20,10 @@
             "problemMatcher": [
                 "$msCompile"
             ],
-            "group": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "detail": "调试器生成的任务。"
         },
         {
@@ -42,10 +45,7 @@
             "problemMatcher": [
                 "$gcc"
             ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "group": "build",
             "detail": "编译器: /usr/bin/g++-10"
         }
     ],
