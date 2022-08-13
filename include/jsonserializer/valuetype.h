@@ -204,25 +204,41 @@ public:
     }
 };
 
-template <typename T>
-constexpr auto IsAbstractArrayType(...) -> decltype(bool())
-{
-    return false;
-}
+// template <typename T>
+// constexpr auto IsAbstractArrayType(...) -> decltype(bool())
+// {
+//     return false;
+// }
 
-template <typename T>
-constexpr auto IsAbstractArrayType(T* t) -> decltype(std::declval<T>().Size(),
-                                                     std::declval<T>().At(std::size_t()),
-                                                     std::declval<T>()[std::size_t()],
-                                                     bool())
-{
-    return true;
-}
+// template <typename T>
+// constexpr auto IsAbstractArrayType(T* t) -> decltype(std::declval<T>().Size(),
+//                                                      std::declval<T>().At(std::size_t()),
+//                                                      std::declval<T>()[std::size_t()],
+//                                                      bool())
+// {
+//     return true;
+// }
 
-template <typename T>
+// template <typename T>
+// struct IsAbstractArray
+// {
+//     static constexpr bool value = IsAbstractArrayType<T>(nullptr);
+// };
+
+template <typename T, typename = void>
 struct IsAbstractArray
+    : std::false_type
 {
-    static constexpr bool value = IsAbstractArrayType<T>(nullptr);
+};
+
+template <typename T>
+struct IsAbstractArray<T,
+                       decltype(std::declval<T>().Size(),
+                                std::declval<T>().At(std::size_t()),
+                                std::declval<T>()[std::size_t()],
+                                void())>
+    : std::true_type
+{
 };
 
 template <typename T>
