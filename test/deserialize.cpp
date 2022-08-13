@@ -59,8 +59,8 @@ int main(int argc, char** argv)
     std::string_view sv = dom["object"]["object"]["string_view"];
     jsr::Array array = dom["object"]["object"]["multi_type_array"];
     int array_int = array[0];
-    int array_double = array[1];
-    int array_string = array[2];
+    double array_double = array[1];
+    std::string array_string = array[2];
     std::cout << i << std::endl;
     std::cout << d << std::endl;
     std::cout << i64 << std::endl;
@@ -72,5 +72,8 @@ int main(int argc, char** argv)
     std::cout << object_d << std::endl;
     std::cout << object_const_char_ptr << std::endl;
     std::cout << sv << std::endl;
+    std::cout << array_int << std::endl;
+    std::cout << array_double << std::endl;
+    std::cout << array_string << std::endl;
     return 0;
 }
