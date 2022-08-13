@@ -8,11 +8,13 @@
                 "/Zi",
                 "/EHsc",
                 "/nologo",
-                "/Fe${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "${file}"
+                "/MDd",
+                "/std:c++20",
+                "/Fe${workspaceFolder}\\bin\\main.exe",
+                "${workspaceFolder}\\main.cpp"
             ],
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${workspaceFolder}\\bin"
             },
             "problemMatcher": [
                 "$msCompile"

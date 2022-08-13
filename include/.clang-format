@@ -20,7 +20,7 @@ Cpp11BracedListStyle: true
 IndentCaseLabels: false
 SortIncludes: false
 ReflowComments: true
-AlignConsecutiveAssignments: true
+AlignConsecutiveAssignments: false
 AlignTrailingComments: true
 AlignAfterOpenBracket: Align
 BinPackArguments: true
