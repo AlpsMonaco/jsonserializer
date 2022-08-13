@@ -73,25 +73,38 @@ class Value
 {
 public:
     Value(const rapidjson::Value& val)
-        : val_(val) {}
+        : val_(&val)
+    {
+    }
+
+    Value()
+        : val_(nullptr)
+    {
+    }
 
     template <typename T>
     operator T()
     {
-        if (!ValueType<T>::GetChecker()(val_)) return T();
+        if (!ValueType<T>::GetChecker()(*val_)) return T();
         T t;
-        ValueType<T>::GetSetter(t)(val_);
+        ValueType<T>::GetSetter(t)(*val_);
         return t;
+    }
+
+    operator const char*()
+    {
+        if (!val_->IsString()) return "";
+        return val_->GetString();
     }
 
     Value operator[](const char* key)
     {
-        if (!val_.IsObject()) return Value(NullValue::Get());
-        return val_[key];
+        if (!(*val_).IsObject()) return Value(NullValue::Get());
+        return (*val_)[key];
     }
 
 protected:
-    const rapidjson::Value& val_;
+    const rapidjson::Value* val_;
 };
 
 NAMESPACE_JSR_END

@@ -9,15 +9,28 @@ class Array
 {
 public:
     Array(const rapidjson::Value& array_value)
-        : array_value_(array_value),
-          size_(array_value_.Size())
+        : array_value_(&array_value),
+          size_(array_value_->Size())
     {
     }
 
     Array()
-        : array_value_(EmptyArray::Get()),
+        : array_value_(&static_cast<const rapidjson::Value&>(EmptyArray::Get())),
           size_(0)
     {
+    }
+
+    Array(const Array& array)
+        : array_value_(array.array_value_),
+          size_(array.size_)
+    {
+    }
+
+    Array& operator=(const Array& rhs)
+    {
+        array_value_ = rhs.array_value_;
+        size_ = rhs.size_;
+        return *this;
     }
 
     ~Array()
@@ -38,11 +51,11 @@ public:
     {
         if (index > size_)
             return Value(NullValue::Get());
-        return Value(array_value_[index]);
+        return Value((*array_value_)[index]);
     }
 
 protected:
-    const rapidjson::Value& array_value_;
+    const rapidjson::Value* array_value_;
     size_t size_;
 };
 

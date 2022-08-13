@@ -13,17 +13,24 @@ class Pair
 {
 public:
     template <typename T>
-    Pair(const std::string& key, T& t)
+    Pair(const char* key, T& t)
         : key_(key),
           value_setter_(ValueType<T>::GetSetter(t)),
           value_checker_(ValueType<T>::GetChecker())
     {
     }
 
-    Pair(const std::string& key, const Object& object)
+    Pair(const char* key, const Object& object)
         : key_(key),
           value_setter_(ValueType<Object>::GetSetter(object)),
           value_checker_(ValueType<Object>::GetChecker())
+    {
+    }
+
+    Pair(const char* key, const char** p)
+        : key_(key),
+          value_setter_(ValueType<const char**>::GetSetter(p)),
+          value_checker_(ValueType<const char**>::GetChecker())
     {
     }
 

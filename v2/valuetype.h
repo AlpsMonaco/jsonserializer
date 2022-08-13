@@ -17,7 +17,8 @@ struct IsBasicType
 template <typename T>
 struct IsBasicType<T,
                    typename std::enable_if<std::is_arithmetic<T>::value ||
-                                           std::is_same<std::string, T>::value>::type>
+                                           std::is_same<std::string, T>::value ||
+                                           std::is_same<std::string_view, T>::value>::type>
 {
     static constexpr bool value = true;
 };
@@ -204,6 +205,27 @@ public:
 };
 
 template <typename T>
+constexpr auto IsAbstractArrayType(...) -> decltype(bool())
+{
+    return false;
+}
+
+template <typename T>
+constexpr auto IsAbstractArrayType() -> decltype(std::declval<T>().Size(),
+                                                 std::declval<T>().At(std::size_t()),
+                                                 std::declval<T>()[std::size_t()],
+                                                 bool())
+{
+    return true;
+}
+
+template <typename T>
+struct IsAbstractArray
+{
+    static constexpr bool value = IsAbstractArrayType<T>();
+};
+
+template <typename T>
 class ValueType<T, typename std::enable_if<IsBasicType<T>::value>::type>
 {
 public:
@@ -255,6 +277,51 @@ public:
         return [](const rapidjson::Value& value) -> bool
         {
             return value.IsArray();
+        };
+    }
+};
+
+template <typename T>
+class ValueType<T,
+                typename std::enable_if<IsAbstractArray<T>::value>::type>
+{
+public:
+    static ValueSetter GetSetter(T& t)
+    {
+        return [&](const rapidjson::Value& array_value) -> Error
+        {
+            t = T(array_value);
+            return Error();
+        };
+    }
+
+    static ValueChecker GetChecker()
+    {
+        return [](const rapidjson::Value& value) -> bool
+        {
+            return value.IsArray();
+        };
+    }
+};
+
+template <>
+class ValueType<const char**, void>
+{
+public:
+    static ValueSetter GetSetter(const char** p)
+    {
+        return [=](const rapidjson::Value& value) -> Error
+        {
+            *p = value.GetString();
+            return Error();
+        };
+    }
+
+    static ValueChecker GetChecker()
+    {
+        return [](const rapidjson::Value& value) -> bool
+        {
+            return value.IsString();
         };
     }
 };

@@ -8,6 +8,7 @@
 #define NAMESPACE_JSR_END }
 
 #include <string>
+#include <string_view>
 #include <functional>
 #include <vector>
 #include <array>

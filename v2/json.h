@@ -2,8 +2,11 @@
 #define __JSON_SERIALIZER_JSON_H__
 
 #include "pair.h"
+#include "array.h"
 
 NAMESPACE_JSR_START
+
+using Document = Value;
 
 class Json
 {
@@ -13,15 +16,25 @@ public:
 
     Error Parse(const std::string& json_string)
     {
-        d_.Parse(json_string.c_str());
+        return Parse(json_string.c_str());
+    }
+
+    Error Parse(const char* json_string)
+    {
+        d_.Parse(json_string);
         if (d_.HasParseError())
             return Error(ErrorCode::kParseJsonError);
         return Error();
     }
 
-    Error Deserialize(const Object& object)
+    Error Unmarshal(const Object& object)
     {
         return Parser::Parse(d_, object);
+    }
+
+    Document Deserialize()
+    {
+        return Document(d_);
     }
 
 protected:
