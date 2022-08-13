@@ -211,10 +211,10 @@ constexpr auto IsAbstractArrayType(...) -> decltype(bool())
 }
 
 template <typename T>
-constexpr auto IsAbstractArrayType() -> decltype(std::declval<T>().Size(),
-                                                 std::declval<T>().At(std::size_t()),
-                                                 std::declval<T>()[std::size_t()],
-                                                 bool())
+constexpr auto IsAbstractArrayType(T* t) -> decltype(std::declval<T>().Size(),
+                                                     std::declval<T>().At(std::size_t()),
+                                                     std::declval<T>()[std::size_t()],
+                                                     bool())
 {
     return true;
 }
@@ -222,7 +222,7 @@ constexpr auto IsAbstractArrayType() -> decltype(std::declval<T>().Size(),
 template <typename T>
 struct IsAbstractArray
 {
-    static constexpr bool value = IsAbstractArrayType<T>();
+    static constexpr bool value = IsAbstractArrayType<T>(nullptr);
 };
 
 template <typename T>
@@ -259,14 +259,14 @@ public:
             for (rapidjson::SizeType i = 0; i < array_value.Size(); i++)
             {
                 const auto& value = array_value[i];
-                if (!BasicType<T::value_type>::CheckType(value))
+                if (!BasicType<typename T::value_type>::CheckType(value))
                 {
                     Error error(ErrorCode::kTypeMismatchInArray);
                     error += std::to_string(i);
                     return error;
                 }
                 else
-                    t.emplace_back(BasicType<T::value_type>::GetValue(value));
+                    t.emplace_back(BasicType<typename T::value_type>::GetValue(value));
             }
             return Error();
         };

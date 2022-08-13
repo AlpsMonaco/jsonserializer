@@ -20,11 +20,33 @@
             "problemMatcher": [
                 "$msCompile"
             ],
+            "group": "build",
+            "detail": "调试器生成的任务。"
+        },
+        {
+            "type": "cppbuild",
+            "label": "(gbd) build",
+            "command": "/usr/bin/g++-10",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "-std=c++2a",
+                "-I${workspaceFolder}/include",
+                "${fileDirname}/${fileBasenameNoExtension}.cpp",
+                "-o",
+                "${workspaceFolder}/bin/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "detail": "调试器生成的任务。"
+            "detail": "编译器: /usr/bin/g++-10"
         }
     ],
     "version": "2.0.0"

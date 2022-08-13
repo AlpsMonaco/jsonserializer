@@ -58,6 +58,19 @@
         "iostream": "cpp",
         "istream": "cpp",
         "array": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "*.tcc": "cpp",
+        "bitset": "cpp",
+        "cstdarg": "cpp",
+        "cwctype": "cpp",
+        "deque": "cpp",
+        "memory_resource": "cpp",
+        "numeric": "cpp",
+        "optional": "cpp",
+        "random": "cpp",
+        "string_view": "cpp",
+        "ranges": "cpp",
+        "sstream": "cpp",
+        "cinttypes": "cpp"
     }
 }

@@ -13,7 +13,7 @@ public:
     static Error Parse(const JsonDomumentType& d, const ObjectType& object)
     {
         Error error;
-        for (const ObjectType::value_type& pair : object)
+        for (const typename ObjectType::value_type& pair : object)
         {
             const std::string& key = pair.Key();
             if (!d.HasMember(key.c_str()))
