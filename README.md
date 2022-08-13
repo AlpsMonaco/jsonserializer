@@ -1,6 +1,6 @@
 # jsonserializer
 This library aims to convert json string to C++ data struct in modern,fluent and fast way.  
-Runtime safety and No C++ Excaption.
+Runtime safety and No C++ Exception.
 
 ## Simple Example
 
