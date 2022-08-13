@@ -55,14 +55,27 @@ int main(int argc, char** argv)
     jsr::Json json;
     auto err = json.Parse(sample_data);
     HandleError(err);
-    err = json.Unmarshal({{"int", i},
-                          {"double", d},
-                          {"int64", i64},
-                          {"string", s},
-                          {"bool", b},
-                          {"int_array", int_list},
-                          {"string_array", string_list},
-                          {"object", {{"int", object.i}, {"double", object.d}, {"const_char_ptr", &object.s}, {"object", {{"string_view", sv}, {"multi_type_array", array}}}}}});
+    err = json.Unmarshal(
+        {
+            {"int", i},
+            {"double", d},
+            {"int64", i64},
+            {"string", s},
+            {"bool", b},
+            {"int_array", int_list},
+            {"string_array", string_list},
+            {"object", 
+                {
+                    {"int", object.i}, 
+                    {"double", object.d}, 
+                    {"const_char_ptr", &object.s},
+                    {"object", {
+                        {"string_view", sv},
+                        {"multi_type_array", array}}
+                    }
+                }
+            }
+        });
     HandleError(err);
     std::cout << std::setprecision(10);
     std::cout << i << std::endl;
