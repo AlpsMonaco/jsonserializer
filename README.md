@@ -204,7 +204,16 @@ err = json.Unmarshal({{"foo",s}}); // err == false,ok! "bar" is assigment to s s
 
 
 ## Nested Object
-Nested Object is supported.Just make sures the object level is matched from  
-both json string and `jsr` container( `jsr::Document` or `jsr::Object`)
+Nested Object is supported.**Just make sures the object level is matched from  
+both json string and `jsr` container( `jsr::Document` or `jsr::Object`)**
 
 
+## Third Party
+
+### rapidjson
+Thanks to `https://github.com/Tencent/rapidjson`.
+`rapidjson` as internal json parse library which is SUPER fast.  
+This lib is also pass-by-reference in most conditions to reduce construction.  
+
+This lib doesn't use git submodule to maintaince `rapidjson` dependency due to poor network  
+from China To GitHub Server.  
