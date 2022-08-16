@@ -17,7 +17,12 @@ public:
         return value_;
     }
 
-    static NullValue& Get()
+    operator const rapidjson::Value&() const
+    {
+        return value_;
+    }
+
+    static const NullValue& Get()
     {
         static NullValue null_value;
         return null_value;
@@ -38,10 +43,25 @@ public:
         return value_;
     }
 
-    static EmptyObject& Get()
+    operator const rapidjson::Value&() const
+    {
+        return value_;
+    }
+
+    static const EmptyObject& Get()
     {
         static EmptyObject empty_object;
         return empty_object;
+    }
+
+    static auto Begin()
+    {
+        return Get().value_.MemberBegin();
+    }
+
+    static auto End()
+    {
+        return Get().value_.MemberEnd();
     }
 
 protected:
@@ -59,7 +79,12 @@ public:
         return value_;
     }
 
-    static EmptyArray& Get()
+    operator const rapidjson::Value&() const
+    {
+        return value_;
+    }
+
+    static const EmptyArray& Get()
     {
         static EmptyArray empty_array;
         return empty_array;
@@ -101,6 +126,18 @@ public:
     {
         if (!(*val_).IsObject()) return Value(NullValue::Get());
         return (*val_)[key];
+    }
+
+    auto End()
+    {
+        if (!val_->IsObject()) return EmptyObject::End();
+        return val_->MemberEnd();
+    }
+
+    auto Begin()
+    {
+        if (!val_->IsObject()) return EmptyObject::Begin();
+        return val_->MemberBegin();
     }
 
 protected:
