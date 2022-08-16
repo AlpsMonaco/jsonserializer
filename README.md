@@ -28,7 +28,7 @@ int main(int argc,char**argv)
     // return default value instead.
     int i = dom["i"];
     double d = dom["object"]["double"]; 
-    std::string s = = dom["string"];
+    std::string s = dom["string"];
     std::vector<int> int_list = dom["int_list"];
 }
 ```
