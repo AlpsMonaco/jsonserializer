@@ -18,13 +18,6 @@ const char* json_data = R"(
     "int_list":[1,2,3]
 })";
 
-const char* json_data = R"(
-{
-    "int" : 1,
-    "object":{ "double" : 2.32}
-    "string" : "hello world",
-    "int_list":[1,2,3]
-})";
 // if every key you registered in the initializer_list exist and all types are matched,
 // err will be false and value from json string will be set to you bind references appropriately.
 int main(int argc,char**argv)
