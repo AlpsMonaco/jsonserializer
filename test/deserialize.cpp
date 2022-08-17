@@ -46,12 +46,6 @@ int main(int argc, char** argv)
     auto err = json.Parse(sample_data);
     HandleError(err);
     jsr::Document dom = json.Deserialize();
-    for (auto it = dom["int"].Begin(); it != dom["int"].End();)
-    {
-        std::cout << it->name.GetString() << std::endl;
-        it++;
-    }
-    return 0;
     int i = dom["int"];
     double d = dom["double"];
     std::int64_t i64 = dom["int64"];
