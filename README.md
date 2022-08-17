@@ -6,8 +6,18 @@ Runtime safety and No C++ Exception.
 
 ### Reference Bind API
 ```c++
-// same as Map Like API above
-...
+#include "jsonserializer/json.h"
+#include <string>
+#include <vector>
+
+const char* json_data = R"(
+{
+    "int" : 1,
+    "object":{ "double" : 2.32}
+    "string" : "hello world",
+    "int_list":[1,2,3]
+})";
+
 const char* json_data = R"(
 {
     "int" : 1,
@@ -40,10 +50,7 @@ int main(int argc,char**argv)
 
 ### Map Like API
 ```c++
-#include "jsonserializer/json.h"
-#include <string>
-#include <vector>
-
+...
 const char* json_data = R"(
 {
     "int" : 1,
