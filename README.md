@@ -47,7 +47,7 @@ int main(int argc,char**argv)
 const char* json_data = R"(
 {
     "int" : 1,
-    "object":{ "double" : 2.32}
+    "object":{ "double" : 2.32},
     "string" : "hello world",
     "int_list":[1,2,3]
 })";
@@ -60,7 +60,7 @@ int main(int argc,char**argv)
     auto dom = json.Deserialize();
     // All assignment are runtime safe,no exception even if the value not exist
     // return default value instead.
-    int i = dom["i"];
+    int i = dom["int"];
     double d = dom["object"]["double"]; 
     std::string s = dom["string"];
     std::vector<int> int_list = dom["int_list"];
