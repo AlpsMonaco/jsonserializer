@@ -31,12 +31,12 @@ int main(int argc,char**argv)
     // register references in a initializer_list,pass-by-reference
     err = json.Unmarshal({
         {"int",i},
-        {"object":{
+        {"object",{
             {"double",d}}
         }
         {"string",s},
         {"int_list",int_list},
-    })
+    });
     if(err) return 1;
 }
 ```
