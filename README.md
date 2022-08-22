@@ -108,7 +108,7 @@ auto err = json.Unmarshal({{"s_list",rs_list}});
 A json array could holds values of diffierent types and it is much tricky.You could use `jsr::Array`  
 to resolve it.It is runtime safety class and easy to use.  
 ```c++
-const char * sample = R"({ "s_list" : [1,"foo",false] })";
+const char * sample = R"({ "s_list" : [1,"foo",false,{"foo":"bar"}] })";
 ...
 jsr::Json json;
 json.Parse(sample);
@@ -129,6 +129,10 @@ auto err = json.Unmarshal({
 int ri = rarray[0];
 std::string rs = rarray[1];
 bool rb = rarray[2];
+
+// you could Unmarshal to a binded reference through initializer_list too.
+std::string foo;
+auto err = rarray[3].Unmarshal({{"foo",foo}});
 ```
 
 ### Object Type

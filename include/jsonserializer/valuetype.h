@@ -1,5 +1,5 @@
-#ifndef __JSON_SERIALIZER_VALUE_H__
-#define __JSON_SERIALIZER_VALUE_H__
+#ifndef __JSON_SERIALIZER_VALUE_TYPE_H__
+#define __JSON_SERIALIZER_VALUE_TYPE_H__
 
 #include <type_traits>
 #include "prefix.h"

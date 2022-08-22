@@ -1,8 +1,9 @@
-#ifndef __JSON_SERIALIZER_DATA_H__
-#define __JSON_SERIALIZER_DATA_H__
+#ifndef __JSON_SERIALIZER_VALUE_H__
+#define __JSON_SERIALIZER_VALUE_H__
 
 #include "prefix.h"
 #include "valuetype.h"
+#include "pair.h"
 
 NAMESPACE_JSR_START
 
@@ -20,6 +21,11 @@ public:
     operator const rapidjson::Value&() const
     {
         return value_;
+    }
+
+    operator const rapidjson::Value*() const
+    {
+        return &value_;
     }
 
     static const NullValue& Get()
@@ -103,7 +109,7 @@ public:
     }
 
     Value()
-        : val_(nullptr)
+        : val_(NullValue::Get())
     {
     }
 
@@ -128,16 +134,31 @@ public:
         return (*val_)[key];
     }
 
+    auto Begin()
+    {
+        if (!val_->IsObject()) return EmptyObject::Begin();
+        return val_->MemberBegin();
+    }
+
     auto End()
     {
         if (!val_->IsObject()) return EmptyObject::End();
         return val_->MemberEnd();
     }
 
-    auto Begin()
+    bool IsNull()
     {
-        if (!val_->IsObject()) return EmptyObject::Begin();
-        return val_->MemberBegin();
+        return !val_->IsNull();
+    }
+
+    operator bool()
+    {
+        return IsNull();
+    }
+
+    Error Unmarshal(const Object& object)
+    {
+        return Parser::Parse(*val_, object);
     }
 
 protected:

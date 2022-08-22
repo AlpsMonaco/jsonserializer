@@ -1,8 +1,8 @@
-#ifndef __JSON_SERIALIZER_OBJECT_H__
-#define __JSON_SERIALIZER_OBJECT_H__
+#ifndef __JSON_SERIALIZER_PAIR_H__
+#define __JSON_SERIALIZER_PAIR_H__
 
 #include "prefix.h"
-#include "value.h"
+#include "valuetype.h"
 
 NAMESPACE_JSR_START
 

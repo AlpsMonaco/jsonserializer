@@ -10,7 +10,7 @@ class Array
 public:
     Array(const rapidjson::Value& array_value)
         : array_value_(&array_value),
-          size_(array_value_->Size())
+          size_(array_value.IsArray() ? array_value_->Size() : 0)
     {
     }
 
