@@ -13,7 +13,7 @@ Runtime safety and No C++ Exception.
 const char* json_data = R"(
 {
     "int" : 1,
-    "object":{ "double" : 2.32}
+    "object":{ "double" : 2.32},
     "string" : "hello world",
     "int_list":[1,2,3]
 })";
