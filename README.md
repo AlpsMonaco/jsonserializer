@@ -4,7 +4,7 @@ Runtime safety and No C++ Exception.
 
 ## Simple Example
 
-### Reference Bind API
+### Reference Bind API / Unmarshal
 ```c++
 #include "jsonserializer/json.h"
 #include <string>
@@ -28,7 +28,7 @@ int main(int argc,char**argv)
     jsr::Json json;
     auto err = json.Parse(json_data);
     if(err) return 1;
-    // register references in a initializer_list,pass-by-reference
+    // register references in a initializer_list,pass-by-reference.
     err = json.Unmarshal({
         {"int",i},
         {"object",{
@@ -41,7 +41,7 @@ int main(int argc,char**argv)
 }
 ```
 
-### Map Like API
+### Map Like API / Deserialize
 ```c++
 ...
 const char* json_data = R"(
@@ -64,6 +64,12 @@ int main(int argc,char**argv)
     double d = dom["object"]["double"]; 
     std::string s = dom["string"];
     std::vector<int> int_list = dom["int_list"];
+
+    // you could unmarshal again to check whether the value is exist and bind by reference.
+    double dd;
+    dom["object"].Unmarshal({
+        {"double",dd}
+    });
 }
 ```
 
