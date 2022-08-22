@@ -33,7 +33,7 @@ int main(int argc,char**argv)
         {"int",i},
         {"object",{
             {"double",d}}
-        }
+        },
         {"string",s},
         {"int_list",int_list},
     });
